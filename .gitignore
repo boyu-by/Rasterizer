@@ -1,0 +1,20 @@
+# Build directories
+build/
+out/
+cmake-build-*/
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+
+# Compiled binaries and generated images
+*.exe
+*.obj
+*.o
+*.ppm
+
+# Editor files
+.idea/
+.vscode/
+*.user
+
