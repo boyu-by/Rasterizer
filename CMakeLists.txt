@@ -12,4 +12,5 @@ add_executable(Rasterizer
     Vector3.cpp
     Matrix4.cpp
     Transform.cpp
+    Clipper.cpp
 )

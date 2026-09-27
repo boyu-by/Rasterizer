@@ -15,8 +15,27 @@
 - `lookAt` View Matrix
 - Model → World → View 变换链
 - 透视投影、透视除法与 Viewport 变换
+- Clip Space 六平面齐次裁剪
+- Sutherland–Hodgman 多边形裁剪
+- 裁剪结果的三角扇拆分
 
-当前已完成 Model → View → Projection → NDC → Viewport 变换链。
+当前变换管线：
+
+```text
+Object Space
+→ Model
+→ World Space
+→ View
+→ View Space
+→ Projection
+→ Clip Space
+→ 齐次裁剪
+→ 透视除法
+→ NDC
+→ Viewport
+→ Screen Space
+→ 光栅化
+```
 
 ## 构建
 
@@ -33,7 +52,9 @@ cmake --build build
 
 1. 变换矩阵与相机
 2. 透视投影与屏幕映射
-3. 重心坐标与属性插值
-4. 深度缓冲与遮挡
-5. 齐次裁剪
+3. 齐次裁剪
+4. 重心坐标与属性插值
+5. 深度缓冲与遮挡
 6. 纹理、基础光照与 MSAA
+
+下一步：实现深度缓冲，处理多个三角形之间的前后遮挡。
