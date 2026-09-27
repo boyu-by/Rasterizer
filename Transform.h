@@ -8,3 +8,5 @@ Matrix4 rotateX(double angle);
 Matrix4 rotateY(double angle);
 Matrix4 rotateZ(double angle);
 Matrix4 lookAt(const Vector3& eye,const Vector3& center,const Vector3& up);
+Matrix4 perspective(double fovY,double aspect,double nearPlane,double farPlane);
+Matrix4 viewport(double width,double height);

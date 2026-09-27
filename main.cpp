@@ -8,16 +8,43 @@
 #include "Transform.h"
 using namespace std;
 int main(){
-    Triangle t(Point(100,100), Point(200,100), Point(150,200));
-    Matrix4 model=
-        translate(150,150,0)*
-        rotateZ(30)*
-        scale(1.2,1.2,1)*
-        translate(-150,-150,0);
-    Triangle transformedTriangle=model*t;
-    FrameBuffer fb(800,600);
+    const int width=800;
+    const int height=600;
+
+    Triangle triangleOS(
+        Point(-1,-1,0),
+        Point(1,-1,0),
+        Point(0,1,0)
+    );
+
+    Matrix4 model=rotateY(30)*scale(2,2,2);
+
+    Matrix4 view=lookAt(
+        Vector3(0,0,5),
+        Vector3(0,0,0),
+        Vector3(0,1,0)
+    );
+    Matrix4 projection=perspective(
+        60,
+        static_cast<double>(width)/height,
+        0.1,
+        100
+    );
+    Matrix4 mvp=projection*view*model;
+
+    Vector4 aClip=mvp*Vector4(triangleOS.a.x,triangleOS.a.y,triangleOS.a.z,1);
+    Vector4 bClip=mvp*Vector4(triangleOS.b.x,triangleOS.b.y,triangleOS.b.z,1);
+    Vector4 cClip=mvp*Vector4(triangleOS.c.x,triangleOS.c.y,triangleOS.c.z,1);
+    Triangle triangleNDC(
+        perspectiveDivide(aClip),
+        perspectiveDivide(bClip),
+        perspectiveDivide(cClip)
+    );
+    Triangle triangleSS=viewport(width,height)*triangleNDC;
+
+    FrameBuffer fb(width,height);
     Rasterizer r(fb);
-    r.drawTriangle(transformedTriangle, Color(255, 0, 0));
+    r.drawTriangle(triangleSS, Color(255, 0, 0));
     fb.savePPM("out.ppm");
     return 0;
 }

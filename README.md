@@ -13,8 +13,10 @@
 - 平移、缩放、绕 X/Y/Z 轴旋转
 - Model Matrix 组合
 - `lookAt` View Matrix
+- Model → World → View 变换链
+- 透视投影、透视除法与 Viewport 变换
 
-
+当前已完成 Model → View → Projection → NDC → Viewport 变换链。
 
 ## 构建
 
@@ -35,4 +37,3 @@ cmake --build build
 4. 深度缓冲与遮挡
 5. 齐次裁剪
 6. 纹理、基础光照与 MSAA
-

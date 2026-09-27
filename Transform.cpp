@@ -85,3 +85,25 @@ Matrix4 lookAt(const Vector3& eye,const Vector3& center,const Vector3& up){
     result.m[2][3]=dot(forward,eye);
     return result;
 }
+
+Matrix4 perspective(double fovY,double aspect,double nearPlane,double farPlane){
+    if(fovY<=0||fovY>=180){
+        throw std::invalid_argument("fovY must be between 0 and 180");
+    }
+    if(aspect<=0||nearPlane<=0||farPlane<=nearPlane){
+        throw std::invalid_argument("invalid perspective parameters");
+    }
+    double radian=fovY*std::acos(-1.0)/180.0;
+    double s=1.0/std::tan(radian/2.0);
+    Matrix4 result;
+    result.m[0][0]=s/aspect;
+    result.m[1][1]=s;
+    result.m[2][2]=-(farPlane+nearPlane)/(farPlane-nearPlane);
+    result.m[2][3]=-2*farPlane*nearPlane/(farPlane-nearPlane);
+    result.m[3][2]=-1;
+    return result;
+}
+
+Matrix4 viewport(double width,double height){
+    return translate(width/2.0,height/2.0,0)*scale(width/2.0,-height/2.0,1);
+}
