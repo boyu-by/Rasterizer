@@ -39,7 +39,11 @@ ClipVertex interpolateVertex(const ClipVertex& start,const ClipVertex& end,doubl
         (int)(start.color.g+t*(end.color.g-start.color.g)),
         (int)(start.color.b+t*(end.color.b-start.color.b))
     );
-    return ClipVertex(position,color);
+    Vector2 uv(
+        start.uv.x+t*(end.uv.x-start.uv.x),
+        start.uv.y+t*(end.uv.y-start.uv.y)
+    );
+    return ClipVertex(position,color,uv);
 }
 
 //计算边与指定裁剪平面的交点

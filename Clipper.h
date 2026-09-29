@@ -1,12 +1,14 @@
 #pragma once
 #include <vector>
 #include "Vector4.h"
+#include "Vector2.h"
 #include "Color.h"
 
 struct ClipVertex{
     Vector4 position;
     Color color;
-    ClipVertex(const Vector4& position,const Color& color):position(position),color(color){}
+    Vector2 uv;
+    ClipVertex(const Vector4& position,const Color& color,const Vector2& uv):position(position),color(color),uv(uv){}
 };
 
 struct ClipTriangle{

@@ -37,9 +37,9 @@ int main(){
         1
     );
     ClipTriangle triangleClip{
-        ClipVertex(aClip,Color(255,0,0)),
-        ClipVertex(bClip,Color(0,255,0)),
-        ClipVertex(cClip,Color(0,0,255))
+        ClipVertex(aClip,Color(255,0,0),Vector2(0,0)),
+        ClipVertex(bClip,Color(0,255,0),Vector2(1,0)),
+        ClipVertex(cClip,Color(0,0,255),Vector2(0.5,1))
     };
 
     std::vector<ClipTriangle> clippedTriangles=
@@ -60,9 +60,9 @@ int main(){
             viewportTransform*triangleNDC;
 
         RasterTriangle rasterTriangle{
-            RasterVertex(triangleSS.a,clipped.a.color,1.0/clipped.a.position.w),
-            RasterVertex(triangleSS.b,clipped.b.color,1.0/clipped.b.position.w),
-            RasterVertex(triangleSS.c,clipped.c.color,1.0/clipped.c.position.w)
+            RasterVertex(triangleSS.a,clipped.a.color,clipped.a.uv,1.0/clipped.a.position.w),
+            RasterVertex(triangleSS.b,clipped.b.color,clipped.b.uv,1.0/clipped.b.position.w),
+            RasterVertex(triangleSS.c,clipped.c.color,clipped.c.uv,1.0/clipped.c.position.w)
         };
 
         r.drawTriangle(rasterTriangle);
