@@ -8,7 +8,6 @@ enum class ClipPlane{
     Near,
     Far
 };
-
 // 返回顶点相对裁剪平面的值：正数在内部，负数在外部
 double planeValue(const ClipVertex& vertex, ClipPlane plane) {
     const Vector4& pos = vertex.position;
@@ -29,15 +28,18 @@ double planeValue(const ClipVertex& vertex, ClipPlane plane) {
     return 0;
 }
 
-ClipVertex interpolateVertex(const ClipVertex& start, const ClipVertex& end, double t) {
+ClipVertex interpolateVertex(const ClipVertex& start,const ClipVertex& end,double t){
     const Vector4& a=start.position;
     const Vector4& b=end.position;
-    return ClipVertex(Vector4(
-        a.x+t*(b.x-a.x),
-        a.y+t*(b.y-a.y),
-        a.z+t*(b.z-a.z),
-        a.w+t*(b.w-a.w)
-    ));
+
+    Vector4 position(a.x+t*(b.x-a.x),a.y+t*(b.y-a.y),a.z+t*(b.z-a.z),a.w+t*(b.w-a.w));
+
+    Color color(
+        (int)(start.color.r+t*(end.color.r-start.color.r)),
+        (int)(start.color.g+t*(end.color.g-start.color.g)),
+        (int)(start.color.b+t*(end.color.b-start.color.b))
+    );
+    return ClipVertex(position,color);
 }
 
 //计算边与指定裁剪平面的交点
