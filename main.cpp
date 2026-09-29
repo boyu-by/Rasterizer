@@ -43,8 +43,40 @@ int main(){
         ClipVertex(cClip,Color(0,0,255),Vector2(0.5,1))
     };
 
+    Triangle backTriangleOS(Point(-1.2,-0.8,-0.8),Point(0.8,-0.8,-0.8),Point(-0.2,1.2,-0.8));
+    Vector4 backAClip=mvp*Vector4(
+        backTriangleOS.a.x,
+        backTriangleOS.a.y,
+        backTriangleOS.a.z,
+        1
+    );
+    Vector4 backBClip=mvp*Vector4(
+        backTriangleOS.b.x,
+        backTriangleOS.b.y,
+        backTriangleOS.b.z,
+        1
+    );
+    Vector4 backCClip=mvp*Vector4(
+        backTriangleOS.c.x,
+        backTriangleOS.c.y,
+        backTriangleOS.c.z,
+        1
+    );
+    ClipTriangle backTriangleClip{
+        ClipVertex(backAClip,Color(80,150,255),Vector2(0,0)),
+        ClipVertex(backBClip,Color(80,150,255),Vector2(1,0)),
+        ClipVertex(backCClip,Color(80,150,255),Vector2(0.5,1))
+    };
+
     std::vector<ClipTriangle> clippedTriangles=
         clipTriangle(triangleClip);
+    std::vector<ClipTriangle> backClippedTriangles=
+        clipTriangle(backTriangleClip);
+    clippedTriangles.insert(
+        clippedTriangles.end(),
+        backClippedTriangles.begin(),
+        backClippedTriangles.end()
+    );
 
     FrameBuffer fb(width,height);
     Rasterizer r(fb);

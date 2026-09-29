@@ -1,12 +1,15 @@
 #include "FrameBuffer.h"
 #include <fstream>
 FrameBuffer::FrameBuffer(int w, int h) : width(w), height(h) {
-    pixels.resize(height, vector<Color>(width));
+    samples.resize(height,vector<array<Sample,4>>(width));
 }
 
-void FrameBuffer::setPixel(int x, int y, Color c) {
-    if (x >= 0 && x < width && y >= 0 && y < height) {
-        pixels[y][x] = c;
+void FrameBuffer::setSample(int x,int y,int index,double depth,Color color){
+    if(x>=0&&x<width&&y>=0&&y<height&&index>=0&&index<4){
+        if(depth<samples[y][x][index].depth){
+            samples[y][x][index].depth=depth;
+            samples[y][x][index].color=color;
+        }
     }
 }
 void FrameBuffer::savePPM(const string& filename){
@@ -16,7 +19,11 @@ void FrameBuffer::savePPM(const string& filename){
     out<<"255"<<endl;
     for(int y=0;y<height;y++){
         for(int x=0;x<width;x++){
-            Color c=pixels[y][x];
+            Color c(
+                (samples[y][x][0].color.r+samples[y][x][1].color.r+samples[y][x][2].color.r+samples[y][x][3].color.r)/4,
+                (samples[y][x][0].color.g+samples[y][x][1].color.g+samples[y][x][2].color.g+samples[y][x][3].color.g)/4,
+                (samples[y][x][0].color.b+samples[y][x][1].color.b+samples[y][x][2].color.b+samples[y][x][3].color.b)/4
+            );
             out<<c.r<<" "<<c.g<<" "<<c.b<<endl;
         }
     }
@@ -25,7 +32,10 @@ void FrameBuffer::savePPM(const string& filename){
 void FrameBuffer::clear(){
     for(int i=0;i<height;i++){
         for(int j=0;j<width;j++){
-            pixels[i][j]={0,0,0};
+            for(int k=0;k<4;k++){
+                samples[i][j][k].color=Color(0,0,0);
+                samples[i][j][k].depth=numeric_limits<double>::infinity();
+            }
         }
     }
 }

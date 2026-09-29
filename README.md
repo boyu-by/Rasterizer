@@ -32,6 +32,13 @@
 - P3 PPM 图片纹理读取
 - UV Clamp 与最近邻采样
 - 双线性纹理过滤
+- Mipmap 自动生成
+- 基于 UV 屏幕变化的 LOD 计算
+- 三线性纹理过滤
+- 每个 MSAA 采样点独立保存颜色与深度
+- NDC 深度插值与深度测试
+- 2×2 MSAA Resolve
+- 多三角形遮挡与绘制顺序验证
 
 当前变换管线：
 
@@ -48,11 +55,14 @@ Object Space
 → NDC
 → Viewport
 → Screen Space
+→ 2×2 MSAA 覆盖测试
 → 屏幕空间重心坐标
 → 使用 1/w 修正插值权重
 → 颜色与 UV 顶点属性插值
-→ 图片纹理双线性采样
-→ 光栅化
+→ 计算纹理 LOD
+→ Mipmap 三线性采样
+→ 每采样点深度测试与写入
+→ MSAA Resolve
 ```
 
 ## 构建
@@ -77,4 +87,4 @@ cmake --build build
 7. 深度缓冲与遮挡
 8. 基础光照与 MSAA
 
-下一步：实现 Mipmap 与三线性纹理过滤。
+下一步：实现透明度混合。

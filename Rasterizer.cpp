@@ -4,6 +4,18 @@
 
 Rasterizer::Rasterizer(FrameBuffer& fb):framebuffer(fb){}
 
+Vector2 interpolateUV(const Point& point,const RasterTriangle& t,const Triangle& geometry){
+    Barycentric bary=barycentric(point,geometry);
+    double d=bary.alpha*t.a.inverseW+bary.beta*t.b.inverseW+bary.gamma*t.c.inverseW;
+    double alpha=bary.alpha*t.a.inverseW/d;
+    double beta=bary.beta*t.b.inverseW/d;
+    double gamma=bary.gamma*t.c.inverseW/d;
+    return Vector2(
+        alpha*t.a.uv.x+beta*t.b.uv.x+gamma*t.c.uv.x,
+        alpha*t.a.uv.y+beta*t.b.uv.y+gamma*t.c.uv.y
+    );
+}
+
 void Rasterizer::drawTriangle(const RasterTriangle& t,const Texture& texture){
     Triangle geometry(
         t.a.position,
@@ -37,11 +49,6 @@ void Rasterizer::drawTriangle(const RasterTriangle& t,const Texture& texture){
             samples[2]=Point(x+0.25,y+0.75);
             samples[3]=Point(x+0.75,y+0.75);
 
-            double red=0;
-            double green=0;
-            double blue=0;
-            int cnt=0;
-
             for(int i=0;i<4;i++){
                 Barycentric bary=barycentric(samples[i],geometry);
 
@@ -56,30 +63,32 @@ void Rasterizer::drawTriangle(const RasterTriangle& t,const Texture& texture){
 
                     double u=alpha*t.a.uv.x+beta*t.b.uv.x+gamma*t.c.uv.x;
                     double v=alpha*t.a.uv.y+beta*t.b.uv.y+gamma*t.c.uv.y;
-                    Color textureColor=texture.sampleBilinear(u,v);
+                    Vector2 uvRight=interpolateUV(Point(samples[i].x+1,samples[i].y),t,geometry);
+                    Vector2 uvDown=interpolateUV(Point(samples[i].x,samples[i].y+1),t,geometry);
+                    Color textureColor=texture.sampleTrilinear(
+                        u,v,
+                        uvRight.x-u,uvRight.y-v,
+                        uvDown.x-u,uvDown.y-v
+                    );
 
                     double vertexRed=alpha*t.a.color.r+beta*t.b.color.r+gamma*t.c.color.r;
                     double vertexGreen=alpha*t.a.color.g+beta*t.b.color.g+gamma*t.c.color.g;
                     double vertexBlue=alpha*t.a.color.b+beta*t.b.color.b+gamma*t.c.color.b;
 
-                    red+=vertexRed*textureColor.r/255.0;
-                    green+=vertexGreen*textureColor.g/255.0;
-                    blue+=vertexBlue*textureColor.b/255.0;
-                    cnt++;
+                    double depth=
+                        bary.alpha*t.a.position.z+
+                        bary.beta*t.b.position.z+
+                        bary.gamma*t.c.position.z;
+                    depth=(depth+1.0)/2.0;
+
+                    Color sampleColor(
+                        (int)(vertexRed*textureColor.r/255.0),
+                        (int)(vertexGreen*textureColor.g/255.0),
+                        (int)(vertexBlue*textureColor.b/255.0)
+                    );
+                    framebuffer.setSample(x,y,i,depth,sampleColor);
                 }
             }
-
-            if(cnt==0){
-                continue;
-            }
-
-            Color finalColor(
-                (int)(red/4.0),
-                (int)(green/4.0),
-                (int)(blue/4.0)
-            );
-
-            framebuffer.setPixel(x,y,finalColor);
         }
     }
 }
