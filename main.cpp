@@ -60,9 +60,9 @@ int main(){
             viewportTransform*triangleNDC;
 
         RasterTriangle rasterTriangle{
-            RasterVertex(triangleSS.a,clipped.a.color),
-            RasterVertex(triangleSS.b,clipped.b.color),
-            RasterVertex(triangleSS.c,clipped.c.color)
+            RasterVertex(triangleSS.a,clipped.a.color,1.0/clipped.a.position.w),
+            RasterVertex(triangleSS.b,clipped.b.color,1.0/clipped.b.position.w),
+            RasterVertex(triangleSS.c,clipped.c.color,1.0/clipped.c.position.w)
         };
 
         r.drawTriangle(rasterTriangle);

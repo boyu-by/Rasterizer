@@ -46,21 +46,17 @@ void Rasterizer::drawTriangle(const RasterTriangle& t){
                 Barycentric bary=barycentric(samples[i],geometry);
 
                 if(bary.alpha>=-eps&&bary.beta>=-eps&&bary.gamma>=-eps){
-                    red+=
-                        bary.alpha*t.a.color.r+
-                        bary.beta*t.b.color.r+
-                        bary.gamma*t.c.color.r;
+                    double d=bary.alpha*t.a.inverseW+bary.beta*t.b.inverseW+bary.gamma*t.c.inverseW;
+                    if(abs(d)<eps){
+                        continue;
+                    }
+                    double alpha=bary.alpha*t.a.inverseW/d;
+                    double beta=bary.beta*t.b.inverseW/d;
+                    double gamma=bary.gamma*t.c.inverseW/d;
 
-                    green+=
-                        bary.alpha*t.a.color.g+
-                        bary.beta*t.b.color.g+
-                        bary.gamma*t.c.color.g;
-
-                    blue+=
-                        bary.alpha*t.a.color.b+
-                        bary.beta*t.b.color.b+
-                        bary.gamma*t.c.color.b;
-
+                    red+=alpha*t.a.color.r+beta*t.b.color.r+gamma*t.c.color.r;
+                    green+=alpha*t.a.color.g+beta*t.b.color.g+gamma*t.c.color.g;
+                    blue+=alpha*t.a.color.b+beta*t.b.color.b+gamma*t.c.color.b;
                     cnt++;
                 }
             }

@@ -6,7 +6,8 @@
 struct RasterVertex{
     Point position;
     Color color;
-    RasterVertex(const Point& position,const Color& color):position(position),color(color){}
+    double inverseW; //Clip Space中w的倒数，用于透视正确插值
+    RasterVertex(const Point& position,const Color& color,double inverseW):position(position),color(color),inverseW(inverseW){}
 };
 
 struct RasterTriangle{
