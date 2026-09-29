@@ -14,6 +14,13 @@ struct Triangle{
     Triangle(Point a, Point b, Point c):a(a),b(b),c(c){}
     Triangle():a(Point(0,0)),b(Point(0,0)),c(Point(0,0)){}
 };
+struct Barycentric{
+    double alpha;
+    double beta;
+    double gamma;
+    Barycentric(double alpha, double beta, double gamma):alpha(alpha),beta(beta),gamma(gamma){}
+};
+Barycentric barycentric(const Point& p, const Triangle& t);
 double cross(const Point& a, const Point& b, const Point& c);
 bool insideTriangle(const Point& p, const Triangle& t);
 Point operator*(const Matrix4& matrix, const Point& point);

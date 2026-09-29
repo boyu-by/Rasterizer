@@ -5,12 +5,21 @@
 double cross(const Point& a, const Point& b, const Point& c) {
     return (b.x - a.x) * (c.y - a.y) - (b.y - a.y) * (c.x - a.x);
 }
+Barycentric barycentric(const Point& p,const Triangle& t){
+    double area=cross(t.a,t.b,t.c);
+    if(std::abs(area)<1e-12){
+        throw std::invalid_argument("It is a degenerate triangle");
+    }
+    double alpha=cross(p,t.b,t.c)/area;
+    double beta=cross(t.a,p,t.c)/area;
+    double gamma=cross(t.a,t.b,p)/area;
+    return Barycentric(alpha,beta,gamma);
+}
 
 bool insideTriangle(const Point& p, const Triangle& t) {
-    double cross1 = cross(t.a, t.b, p);
-    double cross2 = cross(t.b, t.c, p);
-    double cross3 = cross(t.c, t.a, p);
-    return (cross1 >= 0 && cross2 >= 0 && cross3 >= 0) || (cross1 <= 0 && cross2 <= 0 && cross3 <= 0);
+    Barycentric bary=barycentric(p,t);
+    const double esp=1e-12;
+    return bary.alpha>=-esp&&bary.beta>=-esp&&bary.gamma>=-esp;
 }
 
 Point operator*(const Matrix4& matrix, const Point& point){
