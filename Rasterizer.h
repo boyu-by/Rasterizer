@@ -25,5 +25,5 @@ class Rasterizer{
         FrameBuffer& framebuffer;
     public:
         Rasterizer(FrameBuffer& fb);
-        void drawTriangle(const RasterTriangle& t,const Texture& texture);
+        void drawTriangle(const RasterTriangle& t,const Texture& texture,bool blend=false,bool depthWrite=true);
 };

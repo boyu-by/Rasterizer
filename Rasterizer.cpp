@@ -16,22 +16,24 @@ Vector2 interpolateUV(const Point& point,const RasterTriangle& t,const Triangle&
     );
 }
 
-void Rasterizer::drawTriangle(const RasterTriangle& t,const Texture& texture){
+void Rasterizer::drawTriangle(const RasterTriangle& t,const Texture& texture,bool blend,bool depthWrite){
     Triangle geometry(
         t.a.position,
         t.b.position,
         t.c.position
     );
 
-    if(abs(cross(geometry.a,geometry.b,geometry.c))<1e-12){
+    //屏幕空间中顺时针为正面
+    double area=cross(geometry.a,geometry.b,geometry.c);
+    if(area>=-1e-12){
         return;
     }
 
     //计算三角形的包围盒
-    int xmin=floor(min({geometry.a.x,geometry.b.x,geometry.c.x}));
-    int xmax=ceil(max({geometry.a.x,geometry.b.x,geometry.c.x}));
-    int ymin=floor(min({geometry.a.y,geometry.b.y,geometry.c.y}));
-    int ymax=ceil(max({geometry.a.y,geometry.b.y,geometry.c.y}));
+    int xmin=static_cast<int>(floor(min({geometry.a.x,geometry.b.x,geometry.c.x})));
+    int xmax=static_cast<int>(ceil(max({geometry.a.x,geometry.b.x,geometry.c.x})));
+    int ymin=static_cast<int>(floor(min({geometry.a.y,geometry.b.y,geometry.c.y})));
+    int ymax=static_cast<int>(ceil(max({geometry.a.y,geometry.b.y,geometry.c.y})));
 
     xmin=max(xmin,0);
     xmax=min(xmax,framebuffer.getWidth()-1);
@@ -74,6 +76,7 @@ void Rasterizer::drawTriangle(const RasterTriangle& t,const Texture& texture){
                     double vertexRed=alpha*t.a.color.r+beta*t.b.color.r+gamma*t.c.color.r;
                     double vertexGreen=alpha*t.a.color.g+beta*t.b.color.g+gamma*t.c.color.g;
                     double vertexBlue=alpha*t.a.color.b+beta*t.b.color.b+gamma*t.c.color.b;
+                    double vertexAlpha=alpha*t.a.color.a+beta*t.b.color.a+gamma*t.c.color.a;
 
                     double depth=
                         bary.alpha*t.a.position.z+
@@ -84,9 +87,10 @@ void Rasterizer::drawTriangle(const RasterTriangle& t,const Texture& texture){
                     Color sampleColor(
                         (int)(vertexRed*textureColor.r/255.0),
                         (int)(vertexGreen*textureColor.g/255.0),
-                        (int)(vertexBlue*textureColor.b/255.0)
+                        (int)(vertexBlue*textureColor.b/255.0),
+                        (int)(vertexAlpha*textureColor.a/255.0)
                     );
-                    framebuffer.setSample(x,y,i,depth,sampleColor);
+                    framebuffer.setSample(x,y,i,depth,sampleColor,blend,depthWrite);
                 }
             }
         }

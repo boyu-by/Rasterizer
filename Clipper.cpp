@@ -37,7 +37,8 @@ ClipVertex interpolateVertex(const ClipVertex& start,const ClipVertex& end,doubl
     Color color(
         (int)(start.color.r+t*(end.color.r-start.color.r)),
         (int)(start.color.g+t*(end.color.g-start.color.g)),
-        (int)(start.color.b+t*(end.color.b-start.color.b))
+        (int)(start.color.b+t*(end.color.b-start.color.b)),
+        (int)(start.color.a+t*(end.color.a-start.color.a))
     );
     Vector2 uv(
         start.uv.x+t*(end.uv.x-start.uv.x),

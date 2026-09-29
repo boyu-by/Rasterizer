@@ -69,7 +69,8 @@ void Texture::generateMipmaps(){
                 current.pixels[y*current.width+x]=Color(
                     (c00.r+c10.r+c01.r+c11.r)/4,
                     (c00.g+c10.g+c01.g+c11.g)/4,
-                    (c00.b+c10.b+c01.b+c11.b)/4
+                    (c00.b+c10.b+c01.b+c11.b)/4,
+                    (c00.a+c10.a+c01.a+c11.a)/4
                 );
             }
         }
@@ -110,14 +111,17 @@ Color Texture::sampleBilinear(double u,double v,int level) const{
     double topRed=c00.r*(1-tx)+c10.r*tx;
     double topGreen=c00.g*(1-tx)+c10.g*tx;
     double topBlue=c00.b*(1-tx)+c10.b*tx;
+    double topAlpha=c00.a*(1-tx)+c10.a*tx;
     double bottomRed=c01.r*(1-tx)+c11.r*tx;
     double bottomGreen=c01.g*(1-tx)+c11.g*tx;
     double bottomBlue=c01.b*(1-tx)+c11.b*tx;
+    double bottomAlpha=c01.a*(1-tx)+c11.a*tx;
 
     return Color(
         (int)std::round(topRed*(1-ty)+bottomRed*ty),
         (int)std::round(topGreen*(1-ty)+bottomGreen*ty),
-        (int)std::round(topBlue*(1-ty)+bottomBlue*ty)
+        (int)std::round(topBlue*(1-ty)+bottomBlue*ty),
+        (int)std::round(topAlpha*(1-ty)+bottomAlpha*ty)
     );
 }
 
@@ -143,6 +147,7 @@ Color Texture::sampleTrilinear(double u,double v,double dudx,double dvdx,double 
     return Color(
         (int)std::round(color0.r*(1-t)+color1.r*t),
         (int)std::round(color0.g*(1-t)+color1.g*t),
-        (int)std::round(color0.b*(1-t)+color1.b*t)
+        (int)std::round(color0.b*(1-t)+color1.b*t),
+        (int)std::round(color0.a*(1-t)+color1.a*t)
     );
 }

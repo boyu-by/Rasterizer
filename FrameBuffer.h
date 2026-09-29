@@ -22,7 +22,7 @@ class FrameBuffer{
     public:
         FrameBuffer(int w, int h);
         //设置采样点颜色和深度
-        void setSample(int x,int y,int index,double depth,Color color);
+        void setSample(int x,int y,int index,double depth,Color color,bool blend=false,bool depthWrite=true);
         //保存为PPM格式
         void savePPM(const string& filename);
         void clear();
