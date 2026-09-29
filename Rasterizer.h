@@ -3,6 +3,7 @@
 #include "Color.h"
 #include "Geometry.h"
 #include "Vector2.h"
+#include "Texture.h"
 
 struct RasterVertex{
     Point position;
@@ -24,5 +25,5 @@ class Rasterizer{
         FrameBuffer& framebuffer;
     public:
         Rasterizer(FrameBuffer& fb);
-        void drawTriangle(const RasterTriangle& t);
+        void drawTriangle(const RasterTriangle& t,const Texture& texture);
 };

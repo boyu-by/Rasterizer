@@ -4,7 +4,7 @@
 
 Rasterizer::Rasterizer(FrameBuffer& fb):framebuffer(fb){}
 
-void Rasterizer::drawTriangle(const RasterTriangle& t){
+void Rasterizer::drawTriangle(const RasterTriangle& t,const Texture& texture){
     Triangle geometry(
         t.a.position,
         t.b.position,
@@ -56,9 +56,7 @@ void Rasterizer::drawTriangle(const RasterTriangle& t){
 
                     double u=alpha*t.a.uv.x+beta*t.b.uv.x+gamma*t.c.uv.x;
                     double v=alpha*t.a.uv.y+beta*t.b.uv.y+gamma*t.c.uv.y;
-                    int checkU=(int)floor(u*8);
-                    int checkV=(int)floor(v*8);
-                    Color textureColor=(checkU+checkV)%2==0?Color(255,255,255):Color(40,40,40);
+                    Color textureColor=texture.sampleBilinear(u,v);
 
                     double vertexRed=alpha*t.a.color.r+beta*t.b.color.r+gamma*t.c.color.r;
                     double vertexGreen=alpha*t.a.color.g+beta*t.b.color.g+gamma*t.c.color.g;

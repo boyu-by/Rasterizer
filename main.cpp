@@ -7,6 +7,7 @@
 #include "Rasterizer.h"
 #include "Transform.h"
 #include "Clipper.h"
+#include "Texture.h"
 using namespace std;
 
 int main(){
@@ -47,6 +48,7 @@ int main(){
 
     FrameBuffer fb(width,height);
     Rasterizer r(fb);
+    Texture texture("texture.ppm");
     Matrix4 viewportTransform=viewport(width,height);
 
     for(const ClipTriangle& clipped:clippedTriangles){
@@ -65,7 +67,7 @@ int main(){
             RasterVertex(triangleSS.c,clipped.c.color,clipped.c.uv,1.0/clipped.c.position.w)
         };
 
-        r.drawTriangle(rasterTriangle);
+        r.drawTriangle(rasterTriangle,texture);
     }
 
     fb.savePPM("out.ppm");

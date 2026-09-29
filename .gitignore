@@ -12,9 +12,9 @@ Makefile
 *.obj
 *.o
 *.ppm
+!texture.ppm
 
 # Editor files
 .idea/
 .vscode/
 *.user
-

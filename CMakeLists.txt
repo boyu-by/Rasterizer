@@ -17,4 +17,5 @@ add_executable(Rasterizer
     Matrix4.cpp
     Transform.cpp
     Clipper.cpp
+    Texture.cpp
 )
