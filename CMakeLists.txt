@@ -9,7 +9,7 @@ if(MSVC)
 endif()
 
 add_executable(Rasterizer
-    main.cpp
+    main.cpps
     FrameBuffer.cpp
     Geometry.cpp
     Rasterizer.cpp
@@ -18,4 +18,5 @@ add_executable(Rasterizer
     Transform.cpp
     Clipper.cpp
     Texture.cpp
+    Bezier.cpp
 )
